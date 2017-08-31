@@ -1,0 +1,139 @@
+package model;
+
+import java.util.Map;
+
+public class Human implements Vehicle {
+
+    /**
+     * X location of the Truck.
+     */
+    private int myX;
+
+    /**
+     * Y location of the Truck.
+     */
+    private int myY;
+
+    /**
+     * Direction the truck is facing.
+     */
+    private Direction myDirection;
+
+    /**
+     * Terrain the hum is on.
+     */
+    private Terrain myTerrain;
+
+    public Human(final int theX, final int theY, 
+                 final Direction theDir, final Terrain theTerrain) {
+        myX = theX;
+        myY = theY;
+        myDirection = theDir;
+        myTerrain = theTerrain;
+    }
+
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        return true;
+    }
+
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+
+        Direction random;
+        Terrain randDir;
+        boolean possibleDir;
+        boolean streeOrLight;
+        if (myTerrain == Terrain.STREET || myTerrain == Terrain.LIGHT) {
+            do {
+                random = Direction.random();
+                randDir = theNeighbors.get(random);
+                possibleDir = randDir == Terrain.WALL;
+                streeOrLight = randDir == Terrain.STREET
+                        || randDir == Terrain.LIGHT;
+            } while (possibleDir || !streeOrLight);
+        } else {
+            do {
+                random = Direction.random();
+                randDir = theNeighbors.get(random);
+                possibleDir = randDir == Terrain.WALL;
+
+            } while (possibleDir || randDir != myTerrain);
+        }
+        result = random;
+        return result;
+    }
+
+    @Override
+    public void collide(final Vehicle theOther) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public int getDeathTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getImageFileName() {
+        String result = "human.gif";
+        if (!isAlive()) {
+            result = "human_dead.gif";
+        }
+        return result;
+    }
+
+    @Override
+    public Direction getDirection() {
+        // TODO Auto-generated method stub
+        return myDirection;
+    }
+
+    @Override
+    public int getX() {
+        // TODO Auto-generated method stub
+        return myX;
+    }
+
+    @Override
+    public int getY() {
+        // TODO Auto-generated method stub
+        return myY;
+    }
+
+    @Override
+    public boolean isAlive() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public void poke() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setDirection(final Direction theDir) {
+        myDirection = theDir;
+    }
+
+    @Override
+    public void setX(final int theX) {
+        myX = theX;
+    }
+
+    @Override
+    public void setY(final int theY) {
+        myY = theY;
+    }
+}

@@ -1,0 +1,92 @@
+/*
+ * TCSS 305 - Taxi
+ */
+package model;
+
+import java.util.Map;
+
+/**
+ * Vehicle class Human.
+ * @author mohibkohi.
+ * @version 1.0
+ */
+public class Human extends AbstractVehicle implements Vehicle {
+
+    /**This vehicle's death time.*/
+    private static final int DEATH_TIME = 45;
+    
+    /**
+     * Terrain the hum is on.
+     */
+    private Terrain myTerrain;
+    
+    /**
+     * Constructor taxi initializes the super fields.
+     * 
+     * @param theX position of the vehicle. 
+     * @param theY position of the vehicle. 
+     * @param theDir of the vehicle.
+     * @param theTerrain of the vehicle.
+     */
+    public Human(final int theX, final int theY, 
+                 final Direction theDir, final Terrain theTerrain) {
+        super(theX, theY, theDir, "human", DEATH_TIME);
+        myTerrain = theTerrain;
+    }
+
+    /**
+     * A query that returns whether this vehicle can pass through the given 
+     * type of terrain, when the street lights are in the given state.
+     * 
+     * @param theTerrain vehicle is on.
+     * @param theLight vehicle is at. 
+     * @return true if the vehicle can pass false otherwise. 
+     */
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        boolean result = false;
+        if (myTerrain == Terrain.STREET || myTerrain == Terrain.LIGHT) {
+            if (theTerrain == Terrain.STREET || theTerrain == Terrain.LIGHT) {
+                result = true;
+            }
+        } else if (myTerrain == theTerrain) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * A query that returns the direction in which this vehicle would like 
+     * to move, given the specified information.
+     * @param theNeighbors of the current position of the vehicle.
+     * @return the direction the vehicle is to move.
+     */
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+
+        Direction random;
+        Terrain randDir;
+        boolean possibleDir;
+        boolean streeOrLight;
+        if (myTerrain == Terrain.STREET || myTerrain == Terrain.LIGHT) {
+            do {
+                random = Direction.random();
+                randDir = theNeighbors.get(random);
+                possibleDir = randDir == Terrain.WALL;
+                streeOrLight = randDir == Terrain.STREET
+                        || randDir == Terrain.LIGHT;
+            } while (possibleDir || !streeOrLight);
+        } else {
+            do {
+                random = Direction.random();
+                randDir = theNeighbors.get(random);
+                possibleDir = randDir == Terrain.WALL;
+
+            } while (possibleDir || randDir != myTerrain);
+        }
+        result = random;
+        return result;
+    }
+    
+}

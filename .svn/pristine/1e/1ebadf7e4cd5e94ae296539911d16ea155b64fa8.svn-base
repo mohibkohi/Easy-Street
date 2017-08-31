@@ -1,0 +1,131 @@
+package model;
+
+import java.util.Map;
+
+public class Taxi implements Vehicle{
+
+    /**X location of the Truck.*/
+    private int myX;
+    
+    /**Y location of the Truck.*/
+    private int myY;
+    
+    /**Direction the truck is facing.*/
+    private Direction myDirection;
+    
+    public Taxi(int theX, int theY, Direction theDirction) {
+        myX = theX;
+        myY = theY;
+        myDirection = theDirction;
+    }
+    
+    @Override
+    public boolean canPass(Terrain theTerrain, Light theLight) {
+        boolean result = true;
+        if (theTerrain == theTerrain.LIGHT) {
+//            long startTimeNano = System.nanoTime( );
+//            long taskTimeNano  = System.nanoTime( ) - startTimeNano;
+//            ThreadMXBean mx = ManagementFactory.getThreadMXBean();
+//            long cpu = mx.getCurrentThreadCpuTime();
+//            long a = cpu/100000000;
+            //System.out.println(a);
+            if (theLight == theLight.RED) {
+                result = false;
+            }
+        }
+        
+        return result;
+    }
+
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+
+        final Terrain straight = theNeighbors.get(myDirection);
+        final Terrain left = theNeighbors.get(myDirection.left());
+        final Terrain right = theNeighbors.get(myDirection.right());
+
+        if (straight == Terrain.STREET || straight == Terrain.LIGHT) {
+            result = myDirection.reverse().reverse();
+        } else if (left == Terrain.STREET || left == Terrain.LIGHT) {
+            result = myDirection.left();
+        } else if (right == Terrain.STREET || right == Terrain.LIGHT) {
+            result = myDirection.right();
+        } else {
+            result = myDirection.reverse();
+        }
+        return result;
+    }
+
+    @Override
+    public void collide(Vehicle theOther) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getDeathTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getImageFileName() {
+        String result = "taxi.gif";
+        if (!isAlive()) {
+            result = "taxi_dead.gif";
+        }
+        return result;
+    }
+
+    @Override
+    public Direction getDirection() {
+        // TODO Auto-generated method stub
+        return myDirection;
+    }
+
+    @Override
+    public int getX() {
+        // TODO Auto-generated method stub
+        return myX;
+    }
+
+    @Override
+    public int getY() {
+        // TODO Auto-generated method stub
+        return myY;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
+
+    @Override
+    public void poke() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDirection(final Direction theDir) {
+        myDirection = theDir;
+    }
+
+    @Override
+    public void setX(final int theX) {
+        myX = theX;
+    }
+
+    @Override
+    public void setY(final int theY) {
+        myY = theY;
+    }
+
+}

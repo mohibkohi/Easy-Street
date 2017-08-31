@@ -1,0 +1,105 @@
+package model;
+
+import java.util.Map;
+
+public class Taxi implements Vehicle{
+
+    /**X location of the Truck.*/
+    private int myX;
+    
+    /**Y location of the Truck.*/
+    private int myY;
+    
+    /**Direction the truck is facing.*/
+    private Direction myDirection;
+    
+    public Taxi(int theX, int theY, Direction theDir) {
+        myX = theX;
+        myY = theY;
+        myDirection = theDir;
+    }
+    
+    @Override
+    public boolean canPass(Terrain theTerrain, Light theLight) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Direction chooseDirection(Map<Direction, Terrain> theNeighbors) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void collide(Vehicle theOther) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getDeathTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getImageFileName() {
+        String result = "taxi.gif";
+        if (!isAlive()) {
+            result = "taxi_dead.gif";
+        }
+        return result;
+    }
+
+    @Override
+    public Direction getDirection() {
+        // TODO Auto-generated method stub
+        return myDirection;
+    }
+
+    @Override
+    public int getX() {
+        // TODO Auto-generated method stub
+        return myX;
+    }
+
+    @Override
+    public int getY() {
+        // TODO Auto-generated method stub
+        return myY;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
+
+    @Override
+    public void poke() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDirection(final Direction theDir) {
+        myDirection = theDir;
+    }
+
+    @Override
+    public void setX(final int theX) {
+        myX = theX;
+    }
+
+    @Override
+    public void setY(final int theY) {
+        myY = theY;
+    }
+
+}

@@ -1,0 +1,127 @@
+/*
+ * TCSS 305 - Bicycle
+ * 
+ */
+
+package model;
+
+import java.util.Map;
+
+/**
+ * Bicycle class implements methods from vehicle class, holds all the 
+ * Behaviors for Bicycle.
+ * 
+ * @author mohibkohi.
+ * @version 1.0.
+ *
+ */
+public class Bicycle extends AbstractVehicle implements Vehicle {
+
+    /**This vehicle's death time.*/
+    private static final int DEATH_TIME = 25; 
+    
+    /**Field to determine when vehicle is stuck at a light.*/
+    private boolean myStuckAtLight;    
+    
+    /**
+     * Constructor Bicycle initializes super's instance fields. 
+     * 
+     * @param theX location of the Bicycle.
+     * @param theY location of the Bicycle.
+     * @param theDir direction of the Bicycle.
+     */
+    public Bicycle(final int theX, final int theY, final Direction theDir) {
+        super(theX, theY, theDir, "bicycle", DEATH_TIME);
+    }
+    
+    /**
+     * A query that returns whether this vehicle can pass through the given 
+     * type of terrain, when the street lights are in the given state.
+     * 
+     * @param theTerrain vehicle is on.
+     * @param theLight vehicle is at. 
+     * @return true if the vehicle can pass false otherwise. 
+     */
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        boolean result = true;
+        if (theTerrain == Terrain.LIGHT) {
+            if (theLight == Light.RED || theLight == Light.YELLOW) {
+                result = false;
+                myStuckAtLight = true;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * A query that returns the direction in which this vehicle would like 
+     * to move, given the specified information.
+     * 
+     * @param theNeighbors of the current position of the vehicle.
+     * @return the direction the vehicle is to move.
+     */
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result;
+        Direction direction = super.getDirection();
+        if (myStuckAtLight) {
+            direction = chooseDirectionStuckAtLight(theNeighbors);     
+            myStuckAtLight = false;
+        }
+        if (theNeighbors.get(direction) == Terrain.TRAIL) {
+            result = direction;
+        } else if (theNeighbors.get(direction.left()) == Terrain.TRAIL) {
+            result = direction.left();
+        } else if (theNeighbors.get(direction.right()) == Terrain.TRAIL) {
+            result = direction.right();
+        } else {
+            result = chooseDirectionNoTrailAround(theNeighbors);
+        }
+        return result;
+    }
+    
+    /**
+     * A helper query that returns the direction in which this vehicle would like 
+     * to move, given the specified information.
+     * 
+     * @param theNeighbors of the current position of the vehicle.
+     * @return the direction the vehicle is to move.
+     */
+    private Direction chooseDirectionStuckAtLight(final Map<Direction, Terrain> theNeighbors) {
+        Direction direction = super.getDirection();
+        if (theNeighbors.get(direction.left()) == Terrain.TRAIL) {
+            direction = direction.left();
+        } else if (theNeighbors.get(direction.right()) == Terrain.TRAIL) {
+            direction = direction.right();
+        }
+        return direction;
+    }
+    
+    /**
+     * A helper query that returns the direction in which this vehicle would like 
+     * to move, given the specified information.
+     * 
+     * @param theNeighbors of the current position of the vehicle.
+     * @return the direction the vehicle is to move.
+     */
+    private Direction chooseDirectionNoTrailAround(
+                                       final Map<Direction, Terrain> theNeighbors) {
+        Direction result;
+        final Direction direction = super.getDirection();
+        final Terrain straight = theNeighbors.get(direction);
+        final Terrain right = theNeighbors.get(direction.right());
+        final Terrain left = theNeighbors.get(direction.left());
+        if (straight == Terrain.STREET || straight == Terrain.LIGHT) {
+            result = direction;
+        } else if (left == Terrain.STREET || left == Terrain.LIGHT) {
+            result = direction.left();
+        } else if (right == Terrain.STREET || right == Terrain.LIGHT) {
+            result = direction.right();
+        } else {
+            result = direction.reverse();
+        }
+        return result;
+    }
+
+}

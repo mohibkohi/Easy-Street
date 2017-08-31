@@ -1,0 +1,132 @@
+package model;
+
+import java.util.Map;
+
+public class Truck implements Vehicle{
+    
+    /**X location of the Truck.*/
+    private int myX;
+    
+    /**Y location of the Truck.*/
+    private int myY;
+    
+    /**Direction the truck is facing.*/
+    private Direction myDirection;
+    
+    public Truck(int theX, int theY, Direction theDir) {
+        myX = theX;
+        myY = theY;
+        myDirection = theDir;
+    }
+
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        return true;
+    }
+
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+
+        final Terrain right = theNeighbors.get(myDirection.right());
+        final Terrain left = theNeighbors.get(myDirection.left());
+        final Terrain straight = theNeighbors.get(myDirection);
+
+        //final Terrain randDir;
+        if ((right != Terrain.STREET && right != Terrain.LIGHT)
+                && (left != Terrain.STREET && left != Terrain.LIGHT)
+                && (straight != Terrain.STREET && straight != Terrain.LIGHT)) {
+            result = myDirection.reverse();
+        } else {
+            Direction random;
+            Terrain randDir;
+            boolean possibleDir;
+            do {
+                random = Direction.random();
+                randDir = theNeighbors.get(random);
+                possibleDir = randDir == Terrain.STREET
+                        || randDir == Terrain.LIGHT;
+
+            } while (!possibleDir || random == myDirection.reverse());
+            result = random;
+        }
+        return result;
+    }
+
+    @Override
+    public void collide(Vehicle theOther) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getDeathTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getImageFileName() {
+        String result = "truck.gif";
+        if (!isAlive()) {
+            result = "truck_dead.gif";
+        }
+        return result;
+    }
+
+    @Override
+    public Direction getDirection() {
+        // TODO Auto-generated method stub
+        
+        return myDirection;
+    }
+
+    @Override
+    public int getX() {
+        // TODO Auto-generated method stub
+        return myX;
+    }
+
+    @Override
+    public int getY() {
+        // TODO Auto-generated method stub
+        return myY;
+    }
+
+    @Override
+    public boolean isAlive() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public void poke() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDirection(Direction theDir) {
+        // TODO Auto-generated method stub
+        myDirection = theDir;
+    }
+
+    @Override
+    public void setX(int theX) {
+        // TODO Auto-generated method stub
+        myX = theX;
+    }
+
+    @Override
+    public void setY(int theY) {
+        // TODO Auto-generated method stub
+        myY = theY;
+    }
+
+}

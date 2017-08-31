@@ -1,0 +1,101 @@
+/*
+ * TCSS 305 - Taxi
+ */
+
+package model;
+
+import java.util.Map;
+
+/**
+ * Vehicle class Taxi.
+ * @author mohibkohi.
+ * @version 1.0
+ */
+public class Taxi extends AbstractVehicle implements Vehicle {
+
+    /**This vehicle's death time.*/
+    private static final int DEATH_TIME = 5;
+    
+    /**Counting how long taxi stayed at a red light.*/
+    private int myCountAtLight;
+    
+    /**How long a taxi should stay at a red light.*/
+    private final int myCountRedLight = 4;
+    /**
+     * Constructor taxi initializes the super fields.
+     * 
+     * @param theX position of the vehicle. 
+     * @param theY position of the vehicle. 
+     * @param theDir of the vehicle. 
+     */
+    public Taxi(final int theX, final int theY, final Direction theDir) {
+        super(theX, theY, theDir, "taxi", DEATH_TIME);
+
+    }
+    
+    /**
+     * A query that returns whether this vehicle can pass through the given 
+     * type of terrain, when the street lights are in the given state. A 
+     * taxi will stop only three clock cycles for a red light. Taxis only 
+     * drive on streets. 
+     * 
+     * @param theTerrain vehicle is on.
+     * @param theLight vehicle is at. 
+     * @return true if the vehicle can pass false otherwise. 
+     */
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        boolean result = true;
+        if (theTerrain == Terrain.LIGHT && theLight == Light.RED) {
+            myCountAtLight++;
+            if (myCountAtLight == myCountRedLight) {
+                result = true;
+                myCountAtLight = 0;
+            } else {
+                result = false;
+            }
+        } else {
+            myCountAtLight = 0;
+        }
+        return result;
+    }
+
+    /**
+     * A query that returns the direction in which this vehicle would like 
+     * to move, given the specified information. A taxi will only choose a 
+     * direction to straight, straight or right, if any not possible taxi
+     * will turn around.
+     * 
+     * @param theNeighbors of the current position of the vehicle.
+     * @return the direction the vehicle is to move.
+     */
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+        final Direction direction = super.getDirection();
+        final Terrain straight = theNeighbors.get(direction);
+        final Terrain left = theNeighbors.get(direction.left());
+        final Terrain right = theNeighbors.get(direction.right());
+
+        if (straight == Terrain.STREET || straight == Terrain.LIGHT) {
+            result = direction.reverse().reverse();
+        } else if (left == Terrain.STREET || left == Terrain.LIGHT) {
+            result = direction.left();
+        } else if (right == Terrain.STREET || right == Terrain.LIGHT) {
+            result = direction.right();
+        } else {
+            result = direction.reverse();
+        }
+        return result;
+    }
+
+    /**
+     * ToString prints the name of the current vehicle.
+     * @return vehicle name.
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " is at x: " + getX() + " y: " 
+                        + getY() + " facing " + getDirection();
+    }
+}

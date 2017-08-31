@@ -1,0 +1,165 @@
+package model;
+
+import java.util.Map;
+
+public class Atv implements Vehicle{
+    
+    /**X location of the Truck.*/
+    private int myX;
+    
+    /**Y location of the Truck.*/
+    private int myY;
+    
+    /**Direction the truck is facing.*/
+    private Direction myDirection;
+    
+    public Atv(int theX, int theY, Direction theDir) {
+        myX = theX;
+        myY = theY;
+        myDirection = theDir;
+    }
+
+    @Override
+    public boolean canPass(final Terrain theTerrain, final Light theLight) {
+        return true;
+    }
+
+    @Override
+    public Direction chooseDirection(final Map<Direction, Terrain> theNeighbors) {
+        Direction result = Direction.EAST;
+        final Direction random = Direction.random();
+        Direction direc = myDirection;
+        
+        final Terrain right = theNeighbors.get(myDirection.right());
+        final Terrain left = theNeighbors.get(myDirection.left());
+        final Terrain straight = theNeighbors.get(myDirection);
+        
+        if (random == myDirection.right()) {
+            direc = myDirection.right();
+        } else if (random == myDirection.left()) {
+            direc = myDirection.left();  
+        } else if (random == myDirection.reverse()) {
+            direc = myDirection.reverse();  
+        }
+        
+        switch (direc) {
+            case NORTH:
+                if (left != Terrain.WALL) {
+                    result = myDirection.left();
+                } else if (right != Terrain.WALL) {
+                    result = myDirection.right();
+                } else if (straight != Terrain.WALL) {
+                    result = myDirection;
+                }
+                break;
+            case SOUTH:
+                if (right != Terrain.WALL) {
+                    result = myDirection.right();
+                } else if (straight != Terrain.WALL) {
+                    result = myDirection;
+                } else if (left != Terrain.WALL) {
+                    result = myDirection.left();
+                }
+                break;
+
+            case EAST:
+                if (straight != Terrain.WALL) {
+                    result = myDirection;
+                } else if (left != Terrain.WALL) {
+                    result = myDirection.left();
+                } else if (right != Terrain.WALL) {
+                    result = myDirection.right();
+                }
+                break;
+            case WEST:
+                if (left != Terrain.WALL) {
+                    result = myDirection.left();
+                } else if (right != Terrain.WALL) {
+                    result = myDirection.right();
+                } else if (straight != Terrain.WALL) {
+                    result = myDirection;
+                }
+                break;
+            default:
+                // this should never happen
+                assert false;
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void collide(final Vehicle theOther) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getDeathTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String getImageFileName() {
+        String result = "atv.gif";
+        if (!isAlive()) {
+            result = "atv_dead.gif";
+        }
+        return result;
+    }
+
+    @Override
+    public Direction getDirection() {
+        // TODO Auto-generated method stub
+        return myDirection;
+    }
+
+    @Override
+    public int getX() {
+        // TODO Auto-generated method stub
+        return myX;
+    }
+
+    @Override
+    public int getY() {
+        // TODO Auto-generated method stub
+        return myY;
+    }
+
+    @Override
+    public boolean isAlive() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public void poke() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDirection(final Direction theDir) {
+        // TODO Auto-generated method stub
+        myDirection = theDir;
+    }
+
+    @Override
+    public void setX(final int theX) {
+        // TODO Auto-generated method stub
+        myX = theX;
+    }
+
+    @Override
+    public void setY(final int theY) {
+        // TODO Auto-generated method stub
+        myY = theY;
+    }
+}
